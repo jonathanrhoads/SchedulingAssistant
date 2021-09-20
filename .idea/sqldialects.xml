@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$USER_HOME$/OneDrive/Pictures/Documents/C195_DB_Scripts/Db/client_schedule_appointments.sql" dialect="MySQL" />
+    <file url="file://$USER_HOME$/OneDrive/Pictures/Documents/C195_DB_Scripts/Db/client_schedule_contacts.sql" dialect="MySQL" />
+    <file url="file://$USER_HOME$/OneDrive/Pictures/Documents/C195_DB_Scripts/Db/client_schedule_countries.sql" dialect="MySQL" />
+    <file url="file://$USER_HOME$/OneDrive/Pictures/Documents/C195_DB_Scripts/Db/client_schedule_customers.sql" dialect="MySQL" />
+    <file url="file://$USER_HOME$/OneDrive/Pictures/Documents/C195_DB_Scripts/Db/client_schedule_first_level_divisions.sql" dialect="MySQL" />
+    <file url="file://$USER_HOME$/OneDrive/Pictures/Documents/C195_DB_Scripts/Db/client_schedule_users.sql" dialect="MySQL" />
+  </component>
+</project>

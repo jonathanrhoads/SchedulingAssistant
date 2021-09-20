@@ -10,8 +10,6 @@ public class Query {
 
     public static void makeQuery(String q){
         query = q;
-        try {
-            statement = connection.createStatement();
-        }
+
     }
 }
