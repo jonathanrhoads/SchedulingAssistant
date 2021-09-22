@@ -1,5 +1,10 @@
 package Model;
 
+import DAO.CustomerDAO;
+import javafx.collections.ObservableList;
+
+import java.sql.SQLException;
+
 public class Customer {
     private int customerId;
     private String customerName;
@@ -9,6 +14,17 @@ public class Customer {
     private String division;
     private String country;
     private int divisionId;
+
+    public static int nextCustomerId() throws SQLException {
+        ObservableList<Customer> customers = CustomerDAO.getCustomers();
+        int lastId = 0;
+        for (Customer customer : customers) {
+            if(customer.getCustomerId() > lastId) {
+                lastId = customer.getCustomerId();
+            }
+        }
+        return lastId + 1;
+    }
 
     public Customer(int customerId, String customerName, String address, String postalCode, String phone, String division, String country, int divisionId) {
         this.customerId = customerId;

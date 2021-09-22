@@ -1,5 +1,10 @@
 package Model;
 
+import DAO.AppointmentDAO;
+import DAO.CustomerDAO;
+import javafx.collections.ObservableList;
+
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 public class Appointment {
@@ -13,6 +18,17 @@ public class Appointment {
     private int customerId;
     private int userId;
     private int contactId;
+
+    public static int nextAppointmentId() throws SQLException {
+        ObservableList<Appointment> appointments = AppointmentDAO.getAppointments();
+        int lastId = 0;
+        for (Appointment appointment : appointments) {
+            if(appointment.getAppointmentId() > lastId) {
+                lastId = appointment.getAppointmentId();
+            }
+        }
+        return lastId + 1;
+    }
 
     public Appointment(int appointmentId, String title, String description, String location, String type, LocalDateTime start, LocalDateTime end, int customerId, int userId, int contactId) {
         this.appointmentId = appointmentId;

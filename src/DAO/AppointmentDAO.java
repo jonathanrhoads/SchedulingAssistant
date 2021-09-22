@@ -4,8 +4,7 @@ import Model.Appointment;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 
 public class AppointmentDAO {
@@ -31,5 +30,27 @@ public class AppointmentDAO {
         }
         DBConnection.closeConnection();
         return appointments;
+    }
+
+    public static void addAppointment(Appointment appointment) throws SQLException {
+        String stmt = "INSERT INTO appointments (Appointment_ID, Title, Description, " +
+                "Location, Type, Start, End, Customer_ID, User_ID, Contact_ID " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+
+        Connection connection = DBConnection.openConnection();
+        PreparedStatement pstmt = connection.prepareStatement(stmt);
+
+        pstmt.setInt(1, appointment.getAppointmentId());
+        pstmt.setString(2, appointment.getTitle());
+        pstmt.setString(3, appointment.getDescription());
+        pstmt.setString(4, appointment.getLocation());
+        pstmt.setString(5, appointment.getType());
+        pstmt.setTimestamp(6, Timestamp.valueOf(appointment.getStart()));
+        pstmt.setTimestamp(7, Timestamp.valueOf(appointment.getEnd()));
+        pstmt.setInt(8, appointment.getCustomerId());
+        pstmt.setInt(9, appointment.getUserId());
+        pstmt.setInt(10, appointment.getContactId());
+
+        pstmt.executeUpdate();
     }
 }
