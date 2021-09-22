@@ -36,6 +36,7 @@ public class LogInController implements Initializable {
     public Label welcomeLabel;
     public Label locationLabel;
     public Label locationValueLabel;
+    public static int currentUserId;
     ResourceBundle rb;
 
 
@@ -99,6 +100,7 @@ public class LogInController implements Initializable {
         if (user != null && user.getPassword().equals(password)){
 
             logInLogger(username, password, true);
+            currentUserId = user.getUserId();
 
             Parent root = FXMLLoader.load(getClass().getResource("/View/MainMenuView.fxml"));
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
