@@ -25,7 +25,7 @@ public class UserDAO {
         return null;
     }
 
-    public static ObservableList<User> getUsers(String username) throws SQLException {
+    public static ObservableList<User> getUsers() throws SQLException {
 
         ObservableList<User> users = FXCollections.observableArrayList();
         String stmt = "SELECT * FROM users";
