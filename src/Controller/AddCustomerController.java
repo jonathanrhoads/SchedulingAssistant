@@ -1,5 +1,12 @@
 package Controller;
 
+import DAO.CountriesDAO;
+import DAO.DivisionsDAO;
+import Model.Country;
+import Model.Customer;
+import Model.Division;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,6 +20,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class AddCustomerController implements Initializable {
@@ -28,10 +36,40 @@ public class AddCustomerController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        try {
+            ObservableList<Country> countries = CountriesDAO.getCountries();
+            ObservableList<String> countryNames = FXCollections.observableArrayList();
 
+            for(Country country : countries){
+                countryNames.add(country.getCountry());
+            }
+            countryComboBox.setItems(countryNames);
+            customerIdTextField.setText(String.valueOf(Customer.nextCustomerId()));
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
-    public void onActionCountryComboBox(ActionEvent actionEvent) {
+    public void onActionCountryComboBox(ActionEvent actionEvent) throws SQLException {
+        ObservableList<Division> divisions = DivisionsDAO.getDivisions();
+        ObservableList<String> countryMatches = FXCollections.observableArrayList();
+        ObservableList<Country> countries = CountriesDAO.getCountries();
+        String selectedCountry = String.valueOf(countryComboBox.getSelectionModel().getSelectedItem());
+        int countryId = 0;
+        for(Country country : countries){
+            if(selectedCountry.equals(country.getCountry())){
+                countryId = country.getCountryId();
+            }
+        }
+
+        for(Division division : divisions) {
+            if(division.getCountryId() == countryId){
+                countryMatches.add(division.getDivision());
+            }
+        }
+        divisionComboBox.setItems(countryMatches);
     }
 
     public void onActionAdd(ActionEvent actionEvent) {
