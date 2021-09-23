@@ -7,32 +7,26 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="Controller.AddCustomerController">
+<AnchorPane prefHeight="400.0" prefWidth="585.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.AddCustomerController">
    <Label layoutX="253.0" layoutY="28.0" text="Add Customer">
       <font>
-         <Font name="System Bold" size="14.0"/>
+         <Font name="System Bold" size="14.0" />
       </font>
    </Label>
-   <Label layoutX="73.0" layoutY="190.0" text="Country"/>
-   <Label layoutX="73.0" layoutY="227.0" text="Division"/>
-   <Label layoutX="50.0" layoutY="62.0" text="Customer ID:"/>
-   <ComboBox fx:id="countryComboBox" layoutX="131.0" layoutY="186.0" onAction="#onActionCountryComboBox"
-             prefHeight="26.0" prefWidth="200.0"/>
-   <ComboBox fx:id="divisionComboBox" layoutX="131.0" layoutY="223.0" prefHeight="26.0" prefWidth="200.0"/>
-   <TextField fx:id="customerIdTextField" disable="true" editable="false" layoutX="133.0" layoutY="57.0"
-              prefHeight="26.0" prefWidth="42.0"/>
-   <Label layoutX="85.0" layoutY="104.0" text="Name"/>
-   <Label layoutX="75.0" layoutY="145.0" text="Address"/>
-   <Label layoutX="76.0" layoutY="336.0" text="Phone"/>
-   <TextField fx:id="nameTextField" layoutX="133.0" layoutY="99.0" prefHeight="26.0" prefWidth="200.0"/>
-   <TextField fx:id="addressTextField" layoutX="133.0" layoutY="141.0" prefHeight="26.0" prefWidth="200.0"/>
-   <TextField fx:id="phoneTextField" layoutX="131.0" layoutY="331.0" prefHeight="26.0" prefWidth="200.0"/>
-   <Label layoutX="53.0" layoutY="270.0" text="Postal Code"/>
-   <TextField fx:id="postalCodeTextField" layoutX="131.0" layoutY="266.0" prefHeight="26.0" prefWidth="200.0"/>
-   <Button fx:id="addButton" layoutX="419.0" layoutY="305.0" mnemonicParsing="false" onAction="#onActionAdd"
-           text="Add"/>
-   <Button fx:id="cancelButton" layoutX="476.0" layoutY="305.0" mnemonicParsing="false" onAction="#onActionCancel"
-           text="Cancel"/>
+   <Label layoutX="73.0" layoutY="190.0" text="Country" />
+   <Label layoutX="73.0" layoutY="227.0" text="Division" />
+   <Label layoutX="50.0" layoutY="62.0" text="Customer ID:" />
+   <ComboBox fx:id="countryComboBox" layoutX="131.0" layoutY="186.0" onAction="#onActionCountryComboBox" prefHeight="26.0" prefWidth="200.0" />
+   <ComboBox fx:id="divisionComboBox" layoutX="131.0" layoutY="223.0" prefHeight="26.0" prefWidth="200.0" />
+   <TextField fx:id="customerIdTextField" disable="true" editable="false" layoutX="133.0" layoutY="57.0" prefHeight="26.0" prefWidth="42.0" />
+   <Label layoutX="85.0" layoutY="104.0" text="Name" />
+   <Label layoutX="75.0" layoutY="145.0" text="Address" />
+   <Label layoutX="76.0" layoutY="336.0" text="Phone" />
+   <TextField fx:id="nameTextField" layoutX="133.0" layoutY="99.0" prefHeight="26.0" prefWidth="200.0" />
+   <TextField fx:id="addressTextField" layoutX="133.0" layoutY="141.0" prefHeight="26.0" prefWidth="200.0" />
+   <TextField fx:id="phoneTextField" layoutX="131.0" layoutY="331.0" prefHeight="26.0" prefWidth="200.0" />
+   <Label layoutX="53.0" layoutY="270.0" text="Postal Code" />
+   <TextField fx:id="postalCodeTextField" layoutX="131.0" layoutY="266.0" prefHeight="26.0" prefWidth="200.0" />
+   <Button fx:id="addButton" layoutX="419.0" layoutY="305.0" mnemonicParsing="false" onAction="#onActionAdd" text="Add" />
+   <Button fx:id="cancelButton" layoutX="476.0" layoutY="305.0" mnemonicParsing="false" onAction="#onActionCancel" text="Cancel" />
 </AnchorPane>

@@ -34,7 +34,7 @@ public class AppointmentDAO {
 
     public static void addAppointment(Appointment appointment) throws SQLException {
         String stmt = "INSERT INTO appointments (Appointment_ID, Title, Description, " +
-                "Location, Type, Start, End, Customer_ID, User_ID, Contact_ID " +
+                "Location, Type, Start, End, Customer_ID, User_ID, Contact_ID) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         Connection connection = DBConnection.openConnection();
@@ -52,5 +52,33 @@ public class AppointmentDAO {
         pstmt.setInt(10, appointment.getContactId());
 
         pstmt.executeUpdate();
+    }
+
+    public static void updateAppointment(Appointment appointment) throws SQLException {
+        String stmt = "UPDATE appointments " +
+                "SET Title = ?, Description = ?, " +
+                "Location = ?, Type = ?, Start = ?, End = ?, Customer_ID = ?, " +
+                "User_ID = ?, Contact_ID = ? " +
+                "WHERE Appointment_ID = " + appointment.getAppointmentId() + ";";
+
+        Connection connection = DBConnection.openConnection();
+        PreparedStatement pstmt = connection.prepareStatement(stmt);
+
+        pstmt.setString(1, appointment.getTitle());
+        pstmt.setString(2, appointment.getDescription());
+        pstmt.setString(3, appointment.getLocation());
+        pstmt.setString(4, appointment.getType());
+        pstmt.setTimestamp(5, Timestamp.valueOf(appointment.getStart()));
+        pstmt.setTimestamp(6, Timestamp.valueOf(appointment.getEnd()));
+        pstmt.setInt(7, appointment.getCustomerId());
+        pstmt.setInt(8, appointment.getUserId());
+        pstmt.setInt(9, appointment.getContactId());
+
+        pstmt.executeUpdate();
+    }
+
+    public static void deleteAppointment(Appointment appointment) throws SQLException {
+        String stmt = "DELETE FROM appointments WHERE Appointment_ID = " + appointment.getAppointmentId() + ";";
+        Query.makeQuery(DBConnection.openConnection(), stmt);
     }
 }

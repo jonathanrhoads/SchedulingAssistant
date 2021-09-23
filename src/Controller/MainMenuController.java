@@ -53,6 +53,8 @@ public class MainMenuController implements Initializable {
     public Button deleteAppointmentButton;
     public static Appointment appointmentToModify;
     public static Customer customerToModify;
+    public TableColumn userIdCol;
+    public TableColumn apptCustomerIdCol;
 
 
     @Override
@@ -81,6 +83,8 @@ public class MainMenuController implements Initializable {
             apptTypeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
             apptStartCol.setCellValueFactory(new PropertyValueFactory<>("start"));
             apptEndCol.setCellValueFactory(new PropertyValueFactory<>("end"));
+            apptCustomerIdCol.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+            userIdCol.setCellValueFactory(new PropertyValueFactory<>("userId"));
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -146,17 +150,31 @@ public class MainMenuController implements Initializable {
     public void onActionModifyCustomer(ActionEvent actionEvent) throws IOException {
         customerToModify = customersTableView.getSelectionModel().getSelectedItem();
 
-        Parent root = FXMLLoader.load(getClass().getResource("/View/ModifyCustomerView.fxml"));
-        Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root, 585, 400);
-        stage.setTitle("Add Customer");
-        stage.setScene(scene);
-        stage.show();
+        if(customerToModify != null) {
+            Parent root = FXMLLoader.load(getClass().getResource("/View/ModifyCustomerView.fxml"));
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root, 585, 400);
+            stage.setTitle("Add Customer");
+            stage.setScene(scene);
+            stage.show();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("No Selection");
+            alert.setContentText("You must make a selection to modify.");
+            alert.showAndWait();
+        }
+
     }
 
-    public void onActionDeleteCustomer(ActionEvent actionEvent) {
+    public void onActionDeleteCustomer(ActionEvent actionEvent) throws SQLException {
         Customer customer = customersTableView.getSelectionModel().getSelectedItem();
 
+        if(customer != null) {
+            CustomerDAO.deleteCustomer(customer);
+        }
+        ObservableList<Customer> customers = CustomerDAO.getCustomers();
+        customersTableView.setItems(customers);
     }
 
     public void onActionAddAppointment(ActionEvent actionEvent) throws IOException {
@@ -171,15 +189,30 @@ public class MainMenuController implements Initializable {
     public void onActionModifyAppointment(ActionEvent actionEvent) throws IOException {
         appointmentToModify = appointmentsTableView.getSelectionModel().getSelectedItem();
 
-        Parent root = FXMLLoader.load(getClass().getResource("/View/ModifyAppointmentView.fxml"));
-        Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root, 725, 590);
-        stage.setTitle("Add Appointment");
-        stage.setScene(scene);
-        stage.show();
+        if(appointmentToModify != null) {
+            Parent root = FXMLLoader.load(getClass().getResource("/View/ModifyAppointmentView.fxml"));
+            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root, 725, 590);
+            stage.setTitle("Add Appointment");
+            stage.setScene(scene);
+            stage.show();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("No Selection");
+            alert.setContentText("You must make a selection to modify.");
+            alert.showAndWait();
+        }
+
     }
 
-    public void onActionDeleteAppointment(ActionEvent actionEvent) {
+    public void onActionDeleteAppointment(ActionEvent actionEvent) throws SQLException {
         Appointment appointment = appointmentsTableView.getSelectionModel().getSelectedItem();
+
+        if(appointment != null) {
+            AppointmentDAO.deleteAppointment(appointment);
+        }
+        ObservableList<Appointment> appointments = AppointmentDAO.getAppointments();
+        appointmentsTableView.setItems(appointments);
     }
 }

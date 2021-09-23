@@ -33,14 +33,16 @@ public class AddAppointmentsController implements Initializable {
     public TextField typeTextField;
     public TextArea descriptionTextField;
     public DatePicker datePicker;
-    public Spinner startHourSpinner;
-    public Spinner startMinuteSpinner;
-    public Spinner endHourSpinner;
-    public Spinner endMinuteSpinner;
     public Button addButton;
     public Button cancelButton;
     public ComboBox addCustomerComboBox;
     public ComboBox addContactComboBox;
+    public ComboBox startHourComboBox;
+    public ComboBox startMinuteComboBox;
+    public ComboBox endHourComboBox;
+    public ComboBox endMinuteComboBox;
+    ObservableList<String> hours = FXCollections.observableArrayList();
+    ObservableList<String> minutes = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -62,10 +64,14 @@ public class AddAppointmentsController implements Initializable {
             addCustomerComboBox.setItems(customerNames);
             addContactComboBox.setItems(contactNames);
 
-            startHourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(00, 23, 00));
-            startMinuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(00, 59, 00));
-            endHourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(00, 23, 00));
-            endMinuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(00, 59, 00));
+            hours.addAll("08", "09", "10", "11", "12", "13", "14",
+                    "15", "16", "17", "18", "19", "20", "21");
+            minutes.addAll("00", "15", "30", "45");
+            startHourComboBox.setItems(hours);
+            hours.add("22");
+            endHourComboBox.setItems(hours);
+            startMinuteComboBox.setItems(minutes);
+            endMinuteComboBox.setItems(minutes);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -73,38 +79,49 @@ public class AddAppointmentsController implements Initializable {
     }
 
     public void onActionAdd(ActionEvent actionEvent) throws SQLException, IOException {
-        int appointmentId = Integer.parseInt(appointmentIdTextField.getText());
-        int customerId = getCustomerId();
-        int contactId = getContactId();
-        int userId = LogInController.currentUserId;
-        String title = titleTextField.getText();
-        String description = descriptionTextField.getText();
-        String location = locationTextField.getText();
-        String type = typeTextField.getText();
-        LocalDateTime start = LocalDateTime.from(datePicker.getValue())
-                .plusHours((Long)startHourSpinner.getValue())
-                .plusMinutes((Long)startMinuteSpinner.getValue());
-        LocalDateTime end = LocalDateTime.from(datePicker.getValue())
-                .plusHours((Long)endHourSpinner.getValue())
-                .plusMinutes((Long)endMinuteSpinner.getValue());
+        try {
+            int appointmentId = Integer.parseInt(appointmentIdTextField.getText());
+            int customerId = getCustomerId();
+            int contactId = getContactId();
+            int userId = LogInController.currentUserId;
+            String title = titleTextField.getText();
+            String description = descriptionTextField.getText();
+            String location = locationTextField.getText();
+            String type = typeTextField.getText();
+            LocalDate date = datePicker.getValue();
+            LocalDateTime start = LocalDateTime.of(date.getYear(), date.getMonthValue(),
+                    date.getDayOfMonth(), Integer.parseInt(String.valueOf(startHourComboBox.getValue())),
+                    Integer.parseInt(String.valueOf(startMinuteComboBox.getValue())));
+            LocalDateTime end = LocalDateTime.of(date.getYear(), date.getMonthValue(),
+                    date.getDayOfMonth(), Integer.parseInt(String.valueOf(endHourComboBox.getValue())),
+                    Integer.parseInt(String.valueOf(endMinuteComboBox.getValue())));
 
-        Appointment appointment = new Appointment(appointmentId, title, description,
-                location, type, start, end, customerId, userId, contactId);
+            Appointment appointment = new Appointment(appointmentId, title, description,
+                    location, type, start, end, customerId, userId, contactId);
 
-        if(isValidAppointment(appointment)){
-            AppointmentDAO.addAppointment(appointment);
+            if(isValidAppointment(appointment)){
+                AppointmentDAO.addAppointment(appointment);
 
-            Parent root = FXMLLoader.load(getClass().getResource("/View/MainMenuView.fxml"));
-            Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root, 880, 850);
-            stage.setTitle("Main Menu");
-            stage.setScene(scene);
-            stage.show();
+                Parent root = FXMLLoader.load(getClass().getResource("/View/MainMenuView.fxml"));
+                Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+                Scene scene = new Scene(root, 880, 850);
+                stage.setTitle("Main Menu");
+                stage.setScene(scene);
+                stage.show();
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Invalid Input");
+            alert.setContentText("Please ensure all fields are filled out and correct.");
+            alert.showAndWait();
         }
+
     }
 
     private boolean isValidAppointment(Appointment appointment) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText("Incorrect Input");
 
@@ -134,6 +151,11 @@ public class AddAppointmentsController implements Initializable {
             return false;
         } else if (appointment.getContactId() == 0 || appointment.getCustomerId() == 0){
             alert.setContentText("Valid choices for contact and customer are required.");
+            alert.showAndWait();
+            return false;
+        } else if (appointment.getEnd().isAfter(LocalDateTime.of(appointment.getEnd().getYear(),
+                appointment.getEnd().getMonthValue(), appointment.getEnd().getDayOfMonth(), 22, 0))){
+            alert.setContentText("Appointments must end by 22:00 (10PM).");
             alert.showAndWait();
             return false;
         }

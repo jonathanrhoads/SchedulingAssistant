@@ -5,9 +5,10 @@ import Model.Customer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 
 public class CustomerDAO {
 
@@ -34,5 +35,40 @@ public class CustomerDAO {
         return customers;
     }
 
+    public static void addCustomer(Customer customer) throws SQLException {
+        String stmt = "INSERT INTO customers (Customer_ID, Customer_Name, " +
+                "Address, Postal_Code, Phone, Division_ID) " +
+                "VALUES (?, ?, ?, ?, ?, ?);";
+        Connection connection = DBConnection.openConnection();
+        PreparedStatement pstmt = connection.prepareStatement(stmt);
 
+        pstmt.setInt(1, customer.getCustomerId());
+        pstmt.setString(2, customer.getCustomerName());
+        pstmt.setString(3, customer.getAddress());
+        pstmt.setString(4, customer.getPostalCode());
+        pstmt.setString(5, customer.getPhone());
+        pstmt.setInt(6, customer.getDivisionId());
+
+        pstmt.executeUpdate();
+    }
+
+    public static void updateCustomer(Customer customer) throws SQLException {
+        String stmt = "UPDATE customers " +
+                "SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, Division_ID = ? " +
+                "WHERE Customer_ID = " + customer.getCustomerId() + ";";
+
+        Connection connection = DBConnection.openConnection();
+        PreparedStatement pstmt = connection.prepareStatement(stmt);
+
+        pstmt.setString(1, customer.getCustomerName());
+        pstmt.setString(2, customer.getAddress());
+        pstmt.setString(3, customer.getPostalCode());
+        pstmt.setString(4, customer.getPhone());
+        pstmt.setInt(5, customer.getDivisionId());
+    }
+
+    public static void deleteCustomer(Customer customer) throws SQLException {
+        String stmt = "DELETE FROM customers WHERE Customer_ID = " + customer.getCustomerId() + ";";
+        Query.makeQuery(DBConnection.openConnection(), stmt);
+    }
 }

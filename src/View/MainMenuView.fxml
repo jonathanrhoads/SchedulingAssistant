@@ -38,15 +38,15 @@
    <TableView fx:id="appointmentsTableView" layoutX="64.0" layoutY="390.0" prefHeight="258.0" prefWidth="778.0">
       <columns>
          <TableColumn fx:id="apptIdCol" prefWidth="25.5999755859375" text="ID" />
-         <TableColumn fx:id="apptTitleCol" prefWidth="70.39998626708984" text="Title" />
-         <TableColumn fx:id="apptDescriptionCol" prefWidth="116.80001831054688" text="Description" />
-         <TableColumn fx:id="apptLocationCol" prefWidth="92.79998779296875" text="Location" />
-         <TableColumn fx:id="apptContactCol" prefWidth="52.6666259765625" text="Contact" />
-         <TableColumn fx:id="apptTypeCol" prefWidth="108.0001220703125" text="Type" />
-         <TableColumn fx:id="apptStartCol" prefWidth="89.60003662109375" text="Start" />
-         <TableColumn fx:id="apptEndCol" prefWidth="89.5999755859375" text="End" />
-         <TableColumn prefWidth="77.5999755859375" text="Customer ID" />
-         <TableColumn prefWidth="63.2000732421875" text="User ID" />
+         <TableColumn fx:id="apptTitleCol" prefWidth="69.33331298828125" text="Title" />
+         <TableColumn fx:id="apptDescriptionCol" prefWidth="91.3333740234375" text="Description" />
+         <TableColumn fx:id="apptLocationCol" prefWidth="83.3333740234375" text="Location" />
+         <TableColumn fx:id="apptContactCol" prefWidth="60.0" text="Contact" />
+         <TableColumn fx:id="apptTypeCol" prefWidth="86.666748046875" text="Type" />
+         <TableColumn fx:id="apptStartCol" prefWidth="107.3333740234375" text="Start" />
+         <TableColumn fx:id="apptEndCol" prefWidth="111.3333740234375" text="End" />
+         <TableColumn fx:id="apptCustomerIdCol" prefWidth="81.333251953125" text="Customer ID" />
+         <TableColumn fx:id="userIdCol" prefWidth="63.2000732421875" text="User ID" />
       </columns>
    </TableView>
    <Label layoutX="64.0" layoutY="364.0" text="Appointments">
