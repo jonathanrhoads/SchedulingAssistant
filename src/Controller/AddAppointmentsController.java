@@ -20,8 +20,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.ResourceBundle;
 
 public class AddAppointmentsController implements Initializable {
@@ -42,7 +41,6 @@ public class AddAppointmentsController implements Initializable {
     public ComboBox endHourComboBox;
     public ComboBox endMinuteComboBox;
     ObservableList<String> hours = FXCollections.observableArrayList();
-    ObservableList<String> endHours = FXCollections.observableArrayList();
     ObservableList<String> minutes = FXCollections.observableArrayList();
 
     @Override
@@ -65,13 +63,11 @@ public class AddAppointmentsController implements Initializable {
             addCustomerComboBox.setItems(customerNames);
             addContactComboBox.setItems(contactNames);
 
-            hours.addAll("08", "09", "10", "11", "12", "13", "14",
-                    "15", "16", "17", "18", "19", "20", "21");
+            hours.addAll("00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14",
+                    "15", "16", "17", "18", "19", "20", "21", "22", "23");
             minutes.addAll("00", "15", "30", "45");
             startHourComboBox.setItems(hours);
-            endHours = hours;
-            endHours.add("22");
-            endHourComboBox.setItems(endHours);
+            endHourComboBox.setItems(hours);
             startMinuteComboBox.setItems(minutes);
             endMinuteComboBox.setItems(minutes);
 
@@ -123,7 +119,7 @@ public class AddAppointmentsController implements Initializable {
 
     }
 
-    private boolean isValidAppointment(Appointment appointment) {
+    private boolean isValidAppointment(Appointment appointment) throws SQLException {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText("Incorrect Input");
@@ -156,13 +152,57 @@ public class AddAppointmentsController implements Initializable {
             alert.setContentText("Valid choices for contact and customer are required.");
             alert.showAndWait();
             return false;
-        } else if (appointment.getEnd().isAfter(LocalDateTime.of(appointment.getEnd().getYear(),
-                appointment.getEnd().getMonthValue(), appointment.getEnd().getDayOfMonth(), 22, 0))){
-            alert.setContentText("Appointments must end by 22:00 (10:00 PM).");
-            alert.showAndWait();
-            return false;
         }
-        return true;
+
+        if (hasConflict(appointment, alert)) return false;
+        return !checkWithinBusinessHours(appointment, alert);
+    }
+
+    private boolean hasConflict(Appointment appointment, Alert alert) throws SQLException {
+        ObservableList<Appointment> allAppointments = AppointmentDAO.getAppointments();
+        for(Appointment appt : allAppointments){
+            if(appt.getCustomerId() == appointment.getCustomerId() &&
+                    ((appt.getStart().isBefore(appointment.getEnd()) && appt.getStart().isAfter(appointment.getStart())) ||
+                            (appt.getEnd().isBefore(appointment.getEnd()) && appt.getEnd().isAfter(appointment.getStart())) ||
+                            (appt.getEnd().equals(appointment.getEnd()) && appt.getStart().equals(appointment.getStart())))) {
+
+                alert.setHeaderText("Appointment Conflict");
+                alert.setContentText("This appointment overlaps with ID: " + appt.getAppointmentId());
+                alert.showAndWait();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkWithinBusinessHours(Appointment appointment, Alert alert) {
+        ZonedDateTime startEST = getEST(LocalDateTime.of(appointment.getStart().getYear(),
+                appointment.getStart().getMonthValue(), appointment.getStart().getDayOfMonth(),
+                appointment.getStart().getHour(), appointment.getStart().getMinute()));
+        ZonedDateTime endEST = getEST(LocalDateTime.of(appointment.getEnd().getYear(),
+                appointment.getEnd().getMonthValue(), appointment.getEnd().getDayOfMonth(),
+                appointment.getEnd().getHour(), appointment.getEnd().getMinute()));
+
+        if(startEST.toLocalTime().isBefore(LocalTime.of(8, 0)) ||
+                endEST.toLocalTime().isBefore(LocalTime.of(8, 0)) ||
+                startEST.toLocalTime().isAfter(LocalTime.of(22, 0)) ||
+                endEST.toLocalTime().isAfter(LocalTime.of(22, 0))) {
+
+            alert.setHeaderText("Incorrect Time Input");
+            alert.setContentText("Your appointment must be during the business hours\n" +
+                    " of 8:00 and 22:00 Eastern Standard Time.");
+            alert.showAndWait();
+            return true;
+        }
+        return false;
+    }
+
+    private ZonedDateTime getEST(LocalDateTime time) {
+        return ZonedDateTime.of(time, ZoneId.of("America/New_York"));
+    }
+
+    private ZonedDateTime getLocalTimeZone(LocalDateTime time, String zone) {
+        return ZonedDateTime.of(time, ZoneId.of(zone));
     }
 
     private int getContactId() throws SQLException {

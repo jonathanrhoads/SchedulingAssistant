@@ -1,7 +1,10 @@
 package Controller;
 
+import DAO.AppointmentDAO;
 import DAO.UserDAO;
+import Model.Appointment;
 import Model.User;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -91,6 +94,29 @@ public class LogInController implements Initializable {
         }
     }
 
+    private void upcomingAppointments() throws SQLException {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime fifteenOut = now.plusMinutes(15);
+        ObservableList<Appointment> allAppointments = AppointmentDAO.getAppointments();
+
+        for(Appointment appointment : allAppointments) {
+            if(appointment.getStart().isBefore(fifteenOut) && appointment.getStart().isAfter(now)){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Alert");
+                alert.setHeaderText("Upcoming Appointment");
+                alert.setContentText("Appointment ID: " +
+                        appointment.getAppointmentId() + " starts at " + appointment.getStart());
+                alert.showAndWait();
+                return;
+            }
+        }
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Alert");
+        alert.setHeaderText("Upcoming Appointment");
+        alert.setContentText("There are no upcoming appointments.");
+        alert.showAndWait();
+    }
+
     @FXML
     private void onActionLogIn(ActionEvent actionEvent) throws SQLException, IOException {
         String username = usernameTextField.getText();
@@ -101,6 +127,7 @@ public class LogInController implements Initializable {
 
             logInLogger(username, password, true);
             currentUserId = user.getUserId();
+            upcomingAppointments();
 
             Parent root = FXMLLoader.load(getClass().getResource("/View/MainMenuView.fxml"));
             Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

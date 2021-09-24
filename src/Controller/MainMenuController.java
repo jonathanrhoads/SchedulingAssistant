@@ -88,35 +88,13 @@ public class MainMenuController implements Initializable {
             apptEndCol.setCellValueFactory(new PropertyValueFactory<>("end"));
             apptCustomerIdCol.setCellValueFactory(new PropertyValueFactory<>("customerId"));
             userIdCol.setCellValueFactory(new PropertyValueFactory<>("userId"));
-
-            upcomingAppointments();
+            userIdCol.setCellValueFactory(new PropertyValueFactory<>("userId"));
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    private void upcomingAppointments() throws SQLException {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime fifteenOut = now.plusMinutes(15);
-        ObservableList<Appointment> allAppointments = AppointmentDAO.getAppointments();
 
-        for(Appointment appointment : allAppointments) {
-            if(appointment.getStart().isBefore(fifteenOut) && appointment.getStart().isAfter(now)){
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Alert");
-                alert.setHeaderText("Upcoming Appointment");
-                alert.setContentText("Appointment ID: " +
-                        appointment.getAppointmentId() + " starts at " + appointment.getStart());
-                alert.showAndWait();
-                return;
-            }
-        }
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Alert");
-        alert.setHeaderText("Upcoming Appointment");
-        alert.setContentText("There are no upcoming appointments.");
-        alert.showAndWait();
-    }
 
     public void onActionTotalAppointments(ActionEvent actionEvent) {
     }
