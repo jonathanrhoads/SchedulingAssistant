@@ -22,6 +22,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ResourceBundle;
 
 public class ModifyAppointmentsController implements Initializable {
@@ -42,6 +43,7 @@ public class ModifyAppointmentsController implements Initializable {
     public ComboBox endHourComboBox;
     public ComboBox endMinuteComboBox;
     ObservableList<String> hours = FXCollections.observableArrayList();
+    ObservableList<String> endHours = FXCollections.observableArrayList();
     ObservableList<String> minutes = FXCollections.observableArrayList();
 
     @Override
@@ -79,8 +81,9 @@ public class ModifyAppointmentsController implements Initializable {
                     "15", "16", "17", "18", "19", "20", "21");
             minutes.addAll("00", "15", "30", "45");
             startHourComboBox.setItems(hours);
-            hours.add("22");
-            endHourComboBox.setItems(hours);
+            endHours = hours;
+            endHours.add("22");
+            endHourComboBox.setItems(endHours);
             startMinuteComboBox.setItems(minutes);
             endMinuteComboBox.setItems(minutes);
 
@@ -108,6 +111,7 @@ public class ModifyAppointmentsController implements Initializable {
             int customerId = getCustomerId();
             int contactId = getContactId();
             int userId = LogInController.currentUserId;
+            String contactName = String.valueOf(addContactComboBox.getSelectionModel().getSelectedItem());
             String title = titleTextField.getText();
             String description = descriptionTextField.getText();
             String location = locationTextField.getText();
@@ -121,7 +125,7 @@ public class ModifyAppointmentsController implements Initializable {
                     Integer.parseInt(String.valueOf(endMinuteComboBox.getValue())));
 
             Appointment appointment = new Appointment(appointmentId, title, description,
-                    location, type, start, end, customerId, userId, contactId);
+                    location, type, start, end, customerId, userId, contactId, contactName);
 
             if(isValidAppointment(appointment)){
                 AppointmentDAO.updateAppointment(appointment);
@@ -186,7 +190,11 @@ public class ModifyAppointmentsController implements Initializable {
             alert.setContentText("Valid choices for contact and customer are required.");
             alert.showAndWait();
             return false;
-        } else if (appointment.getEnd().isAfter(LocalDateTime.of(appointment.getEnd().getYear(),
+        } else if (appointment.getStart().atZone(ZoneId.systemDefault()).withZoneSameInstant("America/New_York")){
+
+        }
+
+        else if (appointment.getEnd().isAfter(LocalDateTime.of(appointment.getEnd().getYear(),
                 appointment.getEnd().getMonthValue(), appointment.getEnd().getDayOfMonth(), 22, 0))){
             alert.setContentText("Appointments must end by 22:00 (10PM).");
             alert.showAndWait();

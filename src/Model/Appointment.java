@@ -1,6 +1,7 @@
 package Model;
 
 import DAO.AppointmentDAO;
+import DAO.ContactDAO;
 import DAO.CustomerDAO;
 import javafx.collections.ObservableList;
 
@@ -18,6 +19,7 @@ public class Appointment {
     private int customerId;
     private int userId;
     private int contactId;
+    private String contactName;
 
     public static int nextAppointmentId() throws SQLException {
         ObservableList<Appointment> appointments = AppointmentDAO.getAppointments();
@@ -30,7 +32,7 @@ public class Appointment {
         return lastId + 1;
     }
 
-    public Appointment(int appointmentId, String title, String description, String location, String type, LocalDateTime start, LocalDateTime end, int customerId, int userId, int contactId) {
+    public Appointment(int appointmentId, String title, String description, String location, String type, LocalDateTime start, LocalDateTime end, int customerId, int userId, int contactId, String contactName) {
         this.appointmentId = appointmentId;
         this.title = title;
         this.description = description;
@@ -41,6 +43,7 @@ public class Appointment {
         this.customerId = customerId;
         this.userId = userId;
         this.contactId = contactId;
+        this.contactName = contactName;
     }
 
     public int getAppointmentId() {
@@ -122,4 +125,14 @@ public class Appointment {
     public void setContactId(int contactId) {
         this.contactId = contactId;
     }
+
+    public String getContactName() {
+        return contactName;
+    }
+
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
+    }
+
+
 }

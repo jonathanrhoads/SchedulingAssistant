@@ -63,4 +63,5 @@
    <ComboBox fx:id="startMinuteComboBox" layoutX="569.0" layoutY="243.0" prefHeight="25.0" prefWidth="75.0" />
    <ComboBox fx:id="endHourComboBox" layoutX="479.0" layoutY="291.0" prefHeight="25.0" prefWidth="75.0" />
    <ComboBox fx:id="endMinuteComboBox" layoutX="569.0" layoutY="290.0" prefHeight="25.0" prefWidth="75.0" />
+   <Label layoutX="423.0" layoutY="151.0" prefHeight="17.0" prefWidth="250.0" text="Business hours are 8:00 a.m. to 22:00 p.m. EST" />
 </AnchorPane>

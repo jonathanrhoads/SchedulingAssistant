@@ -72,4 +72,6 @@
       </toggleGroup>
    </RadioButton>
    <RadioButton fx:id="monthRadioButton" layoutX="410.0" layoutY="659.0" mnemonicParsing="false" onAction="#onActionShowMonthAppointments" selected="true" text="Month" toggleGroup="$apptFilterToggleGroup" />
+   <RadioButton fx:id="allRadioButton" layoutX="258.0" layoutY="659.0" mnemonicParsing="false" onAction="#onActionShowAllAppointments" selected="true" text="All" toggleGroup="$apptFilterToggleGroup" />
+   <Button fx:id="logOutButton" layoutX="780.0" layoutY="743.0" mnemonicParsing="false" onAction="#onActionLogOut" text="Log Out" />
 </AnchorPane>

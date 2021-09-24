@@ -18,6 +18,7 @@ public class DivisionsDAO {
             int divisionId = result.getInt("Division_ID");
             String division = result.getString("Division");
             int countryId = result.getInt("Country_ID");
+            divisions.add(new Division(divisionId, division, countryId));
         }
         DBConnection.closeConnection();
         return divisions;

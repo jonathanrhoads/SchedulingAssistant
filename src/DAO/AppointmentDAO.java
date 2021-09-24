@@ -11,7 +11,9 @@ public class AppointmentDAO {
 
     public static ObservableList<Appointment> getAppointments () throws SQLException {
         ObservableList<Appointment> appointments = FXCollections.observableArrayList();
-        String stmt = "SELECT * FROM appointments";
+        String stmt = "SELECT a.Appointment_ID, a.Title, a.Description, a.Location, " +
+                "a.Type, a.Start, a.End, a.Customer_ID, a.User_ID, a.Contact_ID, c.Contact_Name" +
+                " FROM appointments AS a JOIN contacts AS c ON a.Contact_ID = c.Contact_ID;";
         Query.makeQuery(DBConnection.openConnection(), stmt);
         ResultSet result = Query.getResult();
         while(result.next()) {
@@ -25,8 +27,9 @@ public class AppointmentDAO {
             int customerId = result.getInt("Customer_ID");
             int userId = result.getInt("User_ID");
             int contactId = result.getInt("Contact_ID");
+            String contactName = result.getString("Contact_Name");
             appointments.add(new Appointment(appointmentId, title, description, location, type,
-                    start, end, customerId, userId , contactId));
+                    start, end, customerId, userId , contactId, contactName));
         }
         DBConnection.closeConnection();
         return appointments;

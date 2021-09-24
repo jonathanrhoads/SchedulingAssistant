@@ -42,6 +42,7 @@ public class AddAppointmentsController implements Initializable {
     public ComboBox endHourComboBox;
     public ComboBox endMinuteComboBox;
     ObservableList<String> hours = FXCollections.observableArrayList();
+    ObservableList<String> endHours = FXCollections.observableArrayList();
     ObservableList<String> minutes = FXCollections.observableArrayList();
 
     @Override
@@ -68,8 +69,9 @@ public class AddAppointmentsController implements Initializable {
                     "15", "16", "17", "18", "19", "20", "21");
             minutes.addAll("00", "15", "30", "45");
             startHourComboBox.setItems(hours);
-            hours.add("22");
-            endHourComboBox.setItems(hours);
+            endHours = hours;
+            endHours.add("22");
+            endHourComboBox.setItems(endHours);
             startMinuteComboBox.setItems(minutes);
             endMinuteComboBox.setItems(minutes);
 
@@ -84,6 +86,7 @@ public class AddAppointmentsController implements Initializable {
             int customerId = getCustomerId();
             int contactId = getContactId();
             int userId = LogInController.currentUserId;
+            String contactName = String.valueOf(addContactComboBox.getSelectionModel().getSelectedItem());
             String title = titleTextField.getText();
             String description = descriptionTextField.getText();
             String location = locationTextField.getText();
@@ -97,7 +100,7 @@ public class AddAppointmentsController implements Initializable {
                     Integer.parseInt(String.valueOf(endMinuteComboBox.getValue())));
 
             Appointment appointment = new Appointment(appointmentId, title, description,
-                    location, type, start, end, customerId, userId, contactId);
+                    location, type, start, end, customerId, userId, contactId, contactName);
 
             if(isValidAppointment(appointment)){
                 AppointmentDAO.addAppointment(appointment);
@@ -126,7 +129,7 @@ public class AddAppointmentsController implements Initializable {
         alert.setHeaderText("Incorrect Input");
 
         if(appointment.getTitle().isEmpty() || appointment.getTitle().isBlank()) {
-            alert.setContentText("The title is either blank or empty.");
+            alert.setContentText("The title cannot be blank or empty.");
             alert.showAndWait();
             return false;
         } else if (appointment.getDescription().isEmpty() || appointment.getDescription().isBlank()){
@@ -134,11 +137,11 @@ public class AddAppointmentsController implements Initializable {
             alert.showAndWait();
             return false;
         } else if (appointment.getLocation().isEmpty() || appointment.getLocation().isBlank()){
-            alert.setContentText("The location is either blank or empty.");
+            alert.setContentText("The location cannot be blank or empty.");
             alert.showAndWait();
             return false;
         } else if (appointment.getType().isEmpty() || appointment.getType().isBlank()) {
-            alert.setContentText("The type is either blank or empty.");
+            alert.setContentText("The type cannot be blank or empty.");
             alert.showAndWait();
             return false;
         } else if (appointment.getStart().isAfter(appointment.getEnd())){
@@ -155,7 +158,7 @@ public class AddAppointmentsController implements Initializable {
             return false;
         } else if (appointment.getEnd().isAfter(LocalDateTime.of(appointment.getEnd().getYear(),
                 appointment.getEnd().getMonthValue(), appointment.getEnd().getDayOfMonth(), 22, 0))){
-            alert.setContentText("Appointments must end by 22:00 (10PM).");
+            alert.setContentText("Appointments must end by 22:00 (10:00 PM).");
             alert.showAndWait();
             return false;
         }

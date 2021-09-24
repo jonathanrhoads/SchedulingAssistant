@@ -4,6 +4,7 @@ import DAO.AppointmentDAO;
 import DAO.CustomerDAO;
 import Model.Appointment;
 import Model.Customer;
+import com.sun.javafx.collections.ElementObservableListDecorator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -55,6 +56,8 @@ public class MainMenuController implements Initializable {
     public static Customer customerToModify;
     public TableColumn userIdCol;
     public TableColumn apptCustomerIdCol;
+    public RadioButton allRadioButton;
+    public Button logOutButton;
 
 
     @Override
@@ -79,15 +82,40 @@ public class MainMenuController implements Initializable {
             apptTitleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
             apptDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
             apptLocationCol.setCellValueFactory(new PropertyValueFactory<>("location"));
-            apptContactCol.setCellValueFactory(new PropertyValueFactory<>("contactId"));
+            apptContactCol.setCellValueFactory(new PropertyValueFactory<>("contactName"));
             apptTypeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
             apptStartCol.setCellValueFactory(new PropertyValueFactory<>("start"));
             apptEndCol.setCellValueFactory(new PropertyValueFactory<>("end"));
             apptCustomerIdCol.setCellValueFactory(new PropertyValueFactory<>("customerId"));
             userIdCol.setCellValueFactory(new PropertyValueFactory<>("userId"));
+
+            upcomingAppointments();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private void upcomingAppointments() throws SQLException {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime fifteenOut = now.plusMinutes(15);
+        ObservableList<Appointment> allAppointments = AppointmentDAO.getAppointments();
+
+        for(Appointment appointment : allAppointments) {
+            if(appointment.getStart().isBefore(fifteenOut) && appointment.getStart().isAfter(now)){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Alert");
+                alert.setHeaderText("Upcoming Appointment");
+                alert.setContentText("Appointment ID: " +
+                        appointment.getAppointmentId() + " starts at " + appointment.getStart());
+                alert.showAndWait();
+                return;
+            }
+        }
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Alert");
+        alert.setHeaderText("Upcoming Appointment");
+        alert.setContentText("There are no upcoming appointments.");
+        alert.showAndWait();
     }
 
     public void onActionTotalAppointments(ActionEvent actionEvent) {
@@ -168,11 +196,45 @@ public class MainMenuController implements Initializable {
     }
 
     public void onActionDeleteCustomer(ActionEvent actionEvent) throws SQLException {
-        Customer customer = customersTableView.getSelectionModel().getSelectedItem();
 
-        if(customer != null) {
-            CustomerDAO.deleteCustomer(customer);
+        Customer customer = customersTableView.getSelectionModel().getSelectedItem();
+        ObservableList<Appointment> appointments = AppointmentDAO.getAppointments();
+
+
+        if(customer == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("No Selection");
+            alert.setContentText("You must make a selection to delete.");
+            alert.showAndWait();
+            return;
         }
+
+        boolean hasAppointments = false;
+
+        for(Appointment appointment : appointments){
+            if (appointment.getCustomerId() == customer.getCustomerId()){
+                hasAppointments = true;
+                break;
+            }
+        }
+
+        if(hasAppointments) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Appointments Found");
+            alert.setContentText("Customers with appointments can not be deleted.");
+            alert.showAndWait();
+            return;
+        } else {
+            CustomerDAO.deleteCustomer(customer);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation");
+            alert.setHeaderText("Deleted Item");
+            alert.setContentText("You have successfully deleted the selected customer.");
+            alert.showAndWait();
+        }
+
         ObservableList<Customer> customers = CustomerDAO.getCustomers();
         customersTableView.setItems(customers);
     }
@@ -197,7 +259,7 @@ public class MainMenuController implements Initializable {
             stage.setScene(scene);
             stage.show();
         } else {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("No Selection");
             alert.setContentText("You must make a selection to modify.");
@@ -209,10 +271,55 @@ public class MainMenuController implements Initializable {
     public void onActionDeleteAppointment(ActionEvent actionEvent) throws SQLException {
         Appointment appointment = appointmentsTableView.getSelectionModel().getSelectedItem();
 
-        if(appointment != null) {
+        if(appointment == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("No Selection");
+            alert.setContentText("You must make a selection to delete.");
+            alert.showAndWait();
+            return;
+        } else {
             AppointmentDAO.deleteAppointment(appointment);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation");
+            alert.setHeaderText("Deleted Appointment");
+            alert.setContentText("Deleted appointment ID: " +
+                    appointment.getAppointmentId() + " Type: " + appointment.getType());
+            alert.showAndWait();
         }
+
         ObservableList<Appointment> appointments = AppointmentDAO.getAppointments();
         appointmentsTableView.setItems(appointments);
+    }
+
+    public void onActionShowAllAppointments(ActionEvent actionEvent) throws SQLException {
+        ObservableList<Appointment> appointments = AppointmentDAO.getAppointments();
+        appointmentsTableView.setItems(appointments);
+    }
+
+    public void onActionLogOut(ActionEvent actionEvent) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Log Out");
+        alert.setContentText("Are you sure you want to log out?");
+        alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.YES) {
+                Parent root = null;
+                try {
+                    root = FXMLLoader.load(getClass().getResource("/View/LogInView.fxml"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+                Scene scene = new Scene(root, 690, 480);
+                stage.setTitle("Log In");
+                stage.setScene(scene);
+                stage.show();
+            }
+            else {
+                alert.close();
+            }
+        });
     }
 }
