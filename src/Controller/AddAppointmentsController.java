@@ -177,16 +177,20 @@ public class AddAppointmentsController implements Initializable {
 
     private boolean checkWithinBusinessHours(Appointment appointment, Alert alert) {
         ZonedDateTime startEST = getEST(LocalDateTime.of(appointment.getStart().getYear(),
-                appointment.getStart().getMonthValue(), appointment.getStart().getDayOfMonth(),
+                appointment.getStart().getMonth(), appointment.getStart().getDayOfMonth(),
                 appointment.getStart().getHour(), appointment.getStart().getMinute()));
         ZonedDateTime endEST = getEST(LocalDateTime.of(appointment.getEnd().getYear(),
-                appointment.getEnd().getMonthValue(), appointment.getEnd().getDayOfMonth(),
+                appointment.getEnd().getMonth(), appointment.getEnd().getDayOfMonth(),
                 appointment.getEnd().getHour(), appointment.getEnd().getMinute()));
+        ZonedDateTime open = ZonedDateTime.of((LocalDateTime.of(appointment.getEnd().getYear(),
+                appointment.getEnd().getMonth(), appointment.getEnd().getDayOfMonth(),
+                8, 0)), ZoneId.of("America/New_York"));
+        ZonedDateTime close = ZonedDateTime.of((LocalDateTime.of(appointment.getEnd().getYear(),
+                appointment.getEnd().getMonth(), appointment.getEnd().getDayOfMonth(),
+                22, 0)), ZoneId.of("America/New_York"));
 
-        if(startEST.toLocalTime().isBefore(LocalTime.of(8, 0)) ||
-                endEST.toLocalTime().isBefore(LocalTime.of(8, 0)) ||
-                startEST.toLocalTime().isAfter(LocalTime.of(22, 0)) ||
-                endEST.toLocalTime().isAfter(LocalTime.of(22, 0))) {
+        if(startEST.isBefore(open) || endEST.isBefore(open) ||
+                startEST.isAfter(close) || endEST.isAfter(close)) {
 
             alert.setHeaderText("Incorrect Time Input");
             alert.setContentText("Your appointment must be during the business hours\n" +

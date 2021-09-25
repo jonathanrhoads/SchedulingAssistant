@@ -65,6 +65,8 @@ public class CustomerDAO {
         pstmt.setString(3, customer.getPostalCode());
         pstmt.setString(4, customer.getPhone());
         pstmt.setInt(5, customer.getDivisionId());
+
+        pstmt.executeUpdate();
     }
 
     public static void deleteCustomer(Customer customer) throws SQLException {

@@ -194,6 +194,8 @@ public class ModifyAppointmentsController implements Initializable {
     private boolean hasConflict(Appointment appointment, Alert alert) throws SQLException {
         ObservableList<Appointment> allAppointments = AppointmentDAO.getAppointments();
         for(Appointment appt : allAppointments){
+            if(appointment.getAppointmentId() == appt.getAppointmentId()) continue;
+
             if(appt.getCustomerId() == appointment.getCustomerId() &&
                     ((appt.getStart().isBefore(appointment.getEnd()) && appt.getStart().isAfter(appointment.getStart())) ||
                             (appt.getEnd().isBefore(appointment.getEnd()) && appt.getEnd().isAfter(appointment.getStart())) ||
@@ -210,16 +212,20 @@ public class ModifyAppointmentsController implements Initializable {
 
     private boolean checkWithinBusinessHours(Appointment appointment, Alert alert) {
         ZonedDateTime startEST = getEST(LocalDateTime.of(appointment.getStart().getYear(),
-                appointment.getStart().getMonthValue(), appointment.getStart().getDayOfMonth(),
+                appointment.getStart().getMonth(), appointment.getStart().getDayOfMonth(),
                 appointment.getStart().getHour(), appointment.getStart().getMinute()));
         ZonedDateTime endEST = getEST(LocalDateTime.of(appointment.getEnd().getYear(),
-                appointment.getEnd().getMonthValue(), appointment.getEnd().getDayOfMonth(),
+                appointment.getEnd().getMonth(), appointment.getEnd().getDayOfMonth(),
                 appointment.getEnd().getHour(), appointment.getEnd().getMinute()));
+        ZonedDateTime open = ZonedDateTime.of((LocalDateTime.of(appointment.getEnd().getYear(),
+                appointment.getEnd().getMonth(), appointment.getEnd().getDayOfMonth(),
+                8, 0)), ZoneId.of("America/New_York"));
+        ZonedDateTime close = ZonedDateTime.of((LocalDateTime.of(appointment.getEnd().getYear(),
+                appointment.getEnd().getMonth(), appointment.getEnd().getDayOfMonth(),
+                22, 0)), ZoneId.of("America/New_York"));
 
-        if(startEST.toLocalTime().isBefore(LocalTime.of(8, 0)) ||
-                endEST.toLocalTime().isBefore(LocalTime.of(8, 0)) ||
-                startEST.toLocalTime().isAfter(LocalTime.of(22, 0)) ||
-                endEST.toLocalTime().isAfter(LocalTime.of(22, 0))) {
+        if(startEST.isBefore(open) || endEST.isBefore(open) ||
+                startEST.isAfter(close) || endEST.isAfter(close)) {
 
             alert.setHeaderText("Incorrect Time Input");
             alert.setContentText("Your appointment must be during the business hours\n" +
@@ -231,7 +237,9 @@ public class ModifyAppointmentsController implements Initializable {
     }
 
     private ZonedDateTime getEST(LocalDateTime time) {
-        return ZonedDateTime.of(time, ZoneId.of("America/New_York"));
+        return getLocalTimeZone(time, )
+
+                ZonedDateTime.withSam(time, ZoneId.of("America/New_York"));
     }
 
     private ZonedDateTime getLocalTimeZone(LocalDateTime time, String zone) {

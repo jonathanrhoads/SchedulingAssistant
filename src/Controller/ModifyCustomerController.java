@@ -112,8 +112,6 @@ public class ModifyCustomerController implements Initializable {
                 stage.setScene(scene);
                 stage.show();
             }
-
-
         } catch (Exception e) {
             System.out.println(e.getMessage());
             Alert alert = new Alert(Alert.AlertType.ERROR);
