@@ -202,11 +202,8 @@ public class AddAppointmentsController implements Initializable {
     }
 
     private ZonedDateTime getEST(LocalDateTime time) {
-        return ZonedDateTime.of(time, ZoneId.of("America/New_York"));
-    }
-
-    private ZonedDateTime getLocalTimeZone(LocalDateTime time, String zone) {
-        return ZonedDateTime.of(time, ZoneId.of(zone));
+        ZonedDateTime zoneDate = time.atZone(ZoneId.systemDefault());
+        return zoneDate.withZoneSameInstant(ZoneId.of("America/New_York"));
     }
 
     private int getContactId() throws SQLException {

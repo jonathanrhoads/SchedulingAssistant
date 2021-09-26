@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.time.Month;
 
 public class AppointmentDAO {
 
@@ -83,5 +84,21 @@ public class AppointmentDAO {
     public static void deleteAppointment(Appointment appointment) throws SQLException {
         String stmt = "DELETE FROM appointments WHERE Appointment_ID = " + appointment.getAppointmentId() + ";";
         Query.makeQuery(DBConnection.openConnection(), stmt);
+    }
+
+    public static ObservableList<String> getAppointmentsByTypeAndMonth () throws SQLException {
+        ObservableList<String> data = FXCollections.observableArrayList();
+        String stmt = "SELECT Type, MONTH(Start) AS Month, COUNT(*) AS Count FROM appointments GROUP BY Type, Month;";
+        Query.makeQuery(DBConnection.openConnection(), stmt);
+        ResultSet result = Query.getResult();
+        while(result.next()) {
+            String type = result.getString("Type");
+            String month = result.getString("Month");
+            String count = result.getString("Count");
+            String line = "Type: " + type + "\tMonth: " + Month.of(Integer.parseInt(month)) + "\tCount: " + count + "\n";
+            data.add(line);
+        }
+        DBConnection.closeConnection();
+        return data;
     }
 }

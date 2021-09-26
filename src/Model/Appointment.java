@@ -24,6 +24,7 @@ public class Appointment {
     public static int nextAppointmentId() throws SQLException {
         ObservableList<Appointment> appointments = AppointmentDAO.getAppointments();
         int lastId = 0;
+
         for (Appointment appointment : appointments) {
             if(appointment.getAppointmentId() > lastId) {
                 lastId = appointment.getAppointmentId();

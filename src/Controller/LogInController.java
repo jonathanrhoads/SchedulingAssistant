@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -98,6 +99,7 @@ public class LogInController implements Initializable {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime fifteenOut = now.plusMinutes(15);
         ObservableList<Appointment> allAppointments = AppointmentDAO.getAppointments();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm");
 
         for(Appointment appointment : allAppointments) {
             if(appointment.getStart().isBefore(fifteenOut) && appointment.getStart().isAfter(now)){
@@ -105,7 +107,7 @@ public class LogInController implements Initializable {
                 alert.setTitle("Alert");
                 alert.setHeaderText("Upcoming Appointment");
                 alert.setContentText("Appointment ID: " +
-                        appointment.getAppointmentId() + " starts at " + appointment.getStart());
+                        appointment.getAppointmentId() + " starts at " + dtf.format(appointment.getStart()));
                 alert.showAndWait();
                 return;
             }

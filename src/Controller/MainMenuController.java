@@ -58,6 +58,8 @@ public class MainMenuController implements Initializable {
     public TableColumn apptCustomerIdCol;
     public RadioButton allRadioButton;
     public Button logOutButton;
+    public Button custReportButton;
+    public Button totalsReports;
 
 
     @Override
@@ -94,12 +96,31 @@ public class MainMenuController implements Initializable {
         }
     }
 
-
-
-    public void onActionTotalAppointments(ActionEvent actionEvent) {
+    public void onActionCustomerAppointmentReport(ActionEvent actionEvent) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/View/CustomerAppointmentsReportView.fxml"));
+        Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root, 400, 400);
+        stage.setTitle("Customer Appointment Report");
+        stage.setScene(scene);
+        stage.show();
     }
 
-    public void onActionContactSchedule(ActionEvent actionEvent) {
+    public void onActionTotals(ActionEvent actionEvent) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/View/TotalsReportsView.fxml"));
+        Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root, 350, 185);
+        stage.setTitle("Totals Report");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void onActionContactSchedule(ActionEvent actionEvent) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/View/ContactScheduleView.fxml"));
+        Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root, 700, 400);
+        stage.setTitle("Contact Schedule Report");
+        stage.setScene(scene);
+        stage.show();
     }
 
     public void onActionShowWeekAppointments(ActionEvent actionEvent) throws SQLException {
@@ -300,4 +321,7 @@ public class MainMenuController implements Initializable {
             }
         });
     }
+
+
+
 }

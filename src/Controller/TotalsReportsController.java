@@ -1,8 +1,9 @@
 package Controller;
 
 import DAO.AppointmentDAO;
-import DAO.ContactDAO;
+import DAO.CustomerDAO;
 import Model.Appointment;
+import Model.Customer;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -19,27 +20,23 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-public class ContactScheduleController implements Initializable {
-    public Label contactScheduleLabel;
+public class TotalsReportsController implements Initializable {
+    public Label totalAppointmentsLabel;
+    public Label totalCustomersLabel;
     public Button backButton;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-            ObservableList<String> schedules = ContactDAO.getContactSchedules();
-            String text = "Schedule for each contact:\n\n";
+            ObservableList<Customer> customers = CustomerDAO.getCustomers();
+            ObservableList<Appointment> appointments = AppointmentDAO.getAppointments();
 
-            for(String schedule : schedules) {
-                text = text.concat(schedule);
-            }
-
-            contactScheduleLabel.setText(text);
+            totalAppointmentsLabel.setText(String.valueOf(appointments.size()));
+            totalCustomersLabel.setText(String.valueOf(customers.size()));
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public void onActionBack(ActionEvent actionEvent) throws IOException {
