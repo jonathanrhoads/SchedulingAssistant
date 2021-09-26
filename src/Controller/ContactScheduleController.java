@@ -19,8 +19,17 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+/**
+ * The type Contact schedule controller.
+ */
 public class ContactScheduleController implements Initializable {
+    /**
+     * The Contact schedule label.
+     */
     public Label contactScheduleLabel;
+    /**
+     * The Back button.
+     */
     public Button backButton;
 
     @Override
@@ -42,6 +51,12 @@ public class ContactScheduleController implements Initializable {
 
     }
 
+    /**
+     * On action back.
+     *
+     * @param actionEvent the action event
+     * @throws IOException the io exception
+     */
     public void onActionBack(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/View/MainMenuView.fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();

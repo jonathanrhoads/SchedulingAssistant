@@ -23,26 +23,88 @@ import java.sql.SQLException;
 import java.time.*;
 import java.util.ResourceBundle;
 
+/**
+ * The type Add appointments controller.
+ */
 public class AddAppointmentsController implements Initializable {
+    /**
+     * The Customer id text field.
+     */
     public TextField customerIdTextField;
+    /**
+     * The Contact id text field.
+     */
     public TextField contactIdTextField;
+    /**
+     * The Appointment id text field.
+     */
     public TextField appointmentIdTextField;
+    /**
+     * The Title text field.
+     */
     public TextField titleTextField;
+    /**
+     * The Location text field.
+     */
     public TextField locationTextField;
+    /**
+     * The Type text field.
+     */
     public TextField typeTextField;
+    /**
+     * The Description text field.
+     */
     public TextArea descriptionTextField;
+    /**
+     * The Date picker.
+     */
     public DatePicker datePicker;
+    /**
+     * The Add button.
+     */
     public Button addButton;
+    /**
+     * The Cancel button.
+     */
     public Button cancelButton;
+    /**
+     * The Add customer combo box.
+     */
     public ComboBox addCustomerComboBox;
+    /**
+     * The Add contact combo box.
+     */
     public ComboBox addContactComboBox;
+    /**
+     * The Start hour combo box.
+     */
     public ComboBox startHourComboBox;
+    /**
+     * The Start minute combo box.
+     */
     public ComboBox startMinuteComboBox;
+    /**
+     * The End hour combo box.
+     */
     public ComboBox endHourComboBox;
+    /**
+     * The End minute combo box.
+     */
     public ComboBox endMinuteComboBox;
+    /**
+     * The Hours.
+     */
     ObservableList<String> hours = FXCollections.observableArrayList();
+    /**
+     * The Minutes.
+     */
     ObservableList<String> minutes = FXCollections.observableArrayList();
 
+    /**
+     * Initialized the screen.
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
@@ -76,6 +138,13 @@ public class AddAppointmentsController implements Initializable {
         }
     }
 
+    /**
+     * On action add.
+     *
+     * @param actionEvent the action event
+     * @throws SQLException the sql exception
+     * @throws IOException  the io exception
+     */
     public void onActionAdd(ActionEvent actionEvent) throws SQLException, IOException {
         try {
             int appointmentId = Integer.parseInt(appointmentIdTextField.getText());
@@ -119,6 +188,13 @@ public class AddAppointmentsController implements Initializable {
 
     }
 
+    /**
+     * Checks to make sure the inputs are valid
+     *
+     * @param appointment
+     * @return
+     * @throws SQLException
+     */
     private boolean isValidAppointment(Appointment appointment) throws SQLException {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
@@ -158,6 +234,13 @@ public class AddAppointmentsController implements Initializable {
         return !checkWithinBusinessHours(appointment, alert);
     }
 
+    /**
+     * This method checks whether a customer already has another appointment scheduled for that selected time.
+     * @param appointment The appointment to be created
+     * @param alert the alert object created in calling method
+     * @return boolean
+     *
+     */
     private boolean hasConflict(Appointment appointment, Alert alert) throws SQLException {
         ObservableList<Appointment> allAppointments = AppointmentDAO.getAppointments();
         for(Appointment appt : allAppointments){
@@ -175,6 +258,14 @@ public class AddAppointmentsController implements Initializable {
         return false;
     }
 
+    /**
+     * This method compares the input time values to the east coast open and close times to determine
+     * if the users input is valid. The user puts their time in using their local time zone, that will then be converted
+     * to Eastern Standard time which is the zone used by the business.
+     * @param appointment appointment to confirm
+     * @param alert alert
+     * @return
+     */
     private boolean checkWithinBusinessHours(Appointment appointment, Alert alert) {
         ZonedDateTime startEST = getEST(LocalDateTime.of(appointment.getStart().getYear(),
                 appointment.getStart().getMonth(), appointment.getStart().getDayOfMonth(),
@@ -201,11 +292,21 @@ public class AddAppointmentsController implements Initializable {
         return false;
     }
 
+    /**
+     * This method changes a time to Eastern Standard Time.
+     * @param time
+     * @return
+     */
     private ZonedDateTime getEST(LocalDateTime time) {
         ZonedDateTime zoneDate = time.atZone(ZoneId.systemDefault());
         return zoneDate.withZoneSameInstant(ZoneId.of("America/New_York"));
     }
 
+    /**
+     * This method returns the contact ID of the selected contact in the contact combo box.
+     * @return
+     * @throws SQLException
+     */
     private int getContactId() throws SQLException {
         ObservableList<Contact> contacts = ContactDAO.getContacts();
         String contactName = String.valueOf(addContactComboBox.getSelectionModel().getSelectedItem());
@@ -217,6 +318,11 @@ public class AddAppointmentsController implements Initializable {
         return 0;
     }
 
+    /**
+     * This method returns the customer ID of the selected contact in the customer combo box.
+     * @return
+     * @throws SQLException
+     */
     private int getCustomerId() throws SQLException {
         ObservableList<Customer> customers = CustomerDAO.getCustomers();
         String customerName = String.valueOf(addCustomerComboBox.getSelectionModel().getSelectedItem());
@@ -228,6 +334,12 @@ public class AddAppointmentsController implements Initializable {
         return 0;
     }
 
+    /**
+     * On action cancel.
+     *
+     * @param actionEvent the action event
+     * @throws IOException the io exception
+     */
     public void onActionCancel(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/View/MainMenuView.fxml"));
         Stage stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -237,10 +349,22 @@ public class AddAppointmentsController implements Initializable {
         stage.show();
     }
 
+    /**
+     * On action customer combo box.
+     *
+     * @param actionEvent the action event
+     * @throws SQLException the sql exception
+     */
     public void onActionCustomerComboBox(ActionEvent actionEvent) throws SQLException {
         customerIdTextField.setText(String.valueOf(getCustomerId()));
     }
 
+    /**
+     * On action contact combo box.
+     *
+     * @param actionEvent the action event
+     * @throws SQLException the sql exception
+     */
     public void onActionContactComboBox(ActionEvent actionEvent) throws SQLException {
         contactIdTextField.setText(String.valueOf(getContactId()));
     }

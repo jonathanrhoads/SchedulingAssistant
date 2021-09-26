@@ -7,8 +7,17 @@ import javafx.collections.ObservableList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * The type Divisions dao.
+ */
 public class DivisionsDAO {
 
+    /**
+     * Gets divisions.
+     *
+     * @return the divisions
+     * @throws SQLException the sql exception
+     */
     public static ObservableList<Division> getDivisions () throws SQLException {
         ObservableList<Division> divisions = FXCollections.observableArrayList();
         String stmt = "SELECT Division_ID, Division, Country_ID FROM first_level_divisions;";

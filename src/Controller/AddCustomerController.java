@@ -26,17 +26,52 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+/**
+ * The type Add customer controller.
+ */
 public class AddCustomerController implements Initializable {
+    /**
+     * The Country combo box.
+     */
     public ComboBox<String> countryComboBox;
+    /**
+     * The Division combo box.
+     */
     public ComboBox<String> divisionComboBox;
+    /**
+     * The Customer id text field.
+     */
     public TextField customerIdTextField;
+    /**
+     * The Name text field.
+     */
     public TextField nameTextField;
+    /**
+     * The Address text field.
+     */
     public TextField addressTextField;
+    /**
+     * The Phone text field.
+     */
     public TextField phoneTextField;
+    /**
+     * The Postal code text field.
+     */
     public TextField postalCodeTextField;
+    /**
+     * The Add button.
+     */
     public Button addButton;
+    /**
+     * The Cancel button.
+     */
     public Button cancelButton;
 
+    /**
+     * Initialized the screen
+     * @param url url
+     * @param resourceBundle rb
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
@@ -54,6 +89,11 @@ public class AddCustomerController implements Initializable {
         }
     }
 
+    /**
+     * This determines the divisions to be put into the combo box with respect to the country.
+     * @param actionEvent country combo box selection
+     * @throws SQLException
+     */
     @FXML
     private void onActionCountryComboBox(ActionEvent actionEvent) throws SQLException {
         try{
@@ -80,6 +120,12 @@ public class AddCustomerController implements Initializable {
 
     }
 
+    /**
+     * Attempts to add the customer to the database.
+     * @param actionEvent actionEvent
+     * @throws SQLException
+     * @throws IOException
+     */
     @FXML
     private void onActionAdd(ActionEvent actionEvent) throws SQLException, IOException {
         try {
@@ -117,6 +163,11 @@ public class AddCustomerController implements Initializable {
         }
     }
 
+    /**
+     * Checks to see if the customer is valid
+     * @param customer customer to check
+     * @return
+     */
     private boolean isValidCustomer(Customer customer) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
@@ -143,6 +194,11 @@ public class AddCustomerController implements Initializable {
         return true;
     }
 
+    /**
+     * Takes user back to main menu.
+     * @param actionEvent actionEvent
+     * @throws IOException
+     */
     @FXML
     private void onActionCancel(ActionEvent actionEvent) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/View/MainMenuView.fxml"));
@@ -153,6 +209,11 @@ public class AddCustomerController implements Initializable {
         stage.show();
     }
 
+    /**
+     * Gets the division ID.
+     * @return int
+     * @throws SQLException SQLException
+     */
     private int getDivisionId() throws SQLException {
         ObservableList<Division> divisions = DivisionsDAO.getDivisions();
         String divisionName = String.valueOf(divisionComboBox.getSelectionModel().getSelectedItem());

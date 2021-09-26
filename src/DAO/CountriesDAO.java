@@ -7,8 +7,17 @@ import javafx.collections.ObservableList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * The type Countries dao.
+ */
 public class CountriesDAO {
 
+    /**
+     * Gets countries.
+     *
+     * @return the countries
+     * @throws SQLException the sql exception
+     */
     public static ObservableList<Country> getCountries() throws SQLException {
         ObservableList<Country> countries = FXCollections.observableArrayList();
         String stmt = "SELECT Country_ID, Country FROM countries;";

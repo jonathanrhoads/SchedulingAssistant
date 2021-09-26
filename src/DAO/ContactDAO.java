@@ -10,8 +10,17 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * The type Contact dao.
+ */
 public class ContactDAO {
 
+    /**
+     * Gets contacts.
+     *
+     * @return the contacts
+     * @throws SQLException the sql exception
+     */
     public static ObservableList<Contact> getContacts () throws SQLException {
         ObservableList<Contact> contacts = FXCollections.observableArrayList();
         String stmt = "SELECT * FROM contacts";
@@ -27,6 +36,12 @@ public class ContactDAO {
         return contacts;
     }
 
+    /**
+     * Gets contact schedules.
+     *
+     * @return the contact schedules
+     * @throws SQLException the sql exception
+     */
     public static ObservableList<String> getContactSchedules () throws SQLException {
         ObservableList<String> appointments = FXCollections.observableArrayList();
         String stmt = "SELECT a.Appointment_ID, a.Title, a.Description, " +

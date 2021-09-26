@@ -23,30 +23,68 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The type Log in controller.
+ */
 public class LogInController implements Initializable {
+    /**
+     * The Log in button.
+     */
     public Button logInButton;
+    /**
+     * The Exit button.
+     */
     public Button exitButton;
+    /**
+     * The Username text field.
+     */
     public TextField usernameTextField;
+    /**
+     * The Password text field.
+     */
     public TextField passwordTextField;
+    /**
+     * The Title label.
+     */
     public Label titleLabel;
+    /**
+     * The Username label.
+     */
     public Label usernameLabel;
+    /**
+     * The Password label.
+     */
     public Label passwordLabel;
+    /**
+     * The Welcome label.
+     */
     public Label welcomeLabel;
+    /**
+     * The Location label.
+     */
     public Label locationLabel;
+    /**
+     * The Location value label.
+     */
     public Label locationValueLabel;
+    /**
+     * The constant currentUserId.
+     */
     public static int currentUserId;
+    /**
+     * The Rb.
+     */
     ResourceBundle rb;
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Locale.setDefault(Locale.FRENCH); // Uncomment to test FRENCH
+//         Locale.setDefault(Locale.FRENCH); // Uncomment to test FRENCH
         rb = ResourceBundle.getBundle("Helper/Nat", Locale.getDefault());
         locationValueLabel.setText(ZoneId.systemDefault().toString());
         titleLabel.setText(rb.getString("title"));
@@ -58,7 +96,13 @@ public class LogInController implements Initializable {
         exitButton.setText(rb.getString("exit"));
 
     }
-
+    /**
+     * This method creates an alert to verify if the user wants to exit from the program or continue
+     * on the current screen. It does this by  creating two buttons, one for yes and one for no.
+     * LAMBDA: The lambda is used here to grab the response from within the alert and follow the logic to exit
+     * if the response is yes and continue on the log in screen if the response is no.
+     * @param actionEvent
+     */
     @FXML
     private void onActionExit(ActionEvent actionEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -95,30 +139,58 @@ public class LogInController implements Initializable {
         }
     }
 
+    /**
+     * This method checks for upcoming appointments within the next 15 minutes. It also handles the french language
+     * based off of the users default zone.
+     * @throws SQLException
+     */
     private void upcomingAppointments() throws SQLException {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime fifteenOut = now.plusMinutes(15);
         ObservableList<Appointment> allAppointments = AppointmentDAO.getAppointments();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm");
-
-        for(Appointment appointment : allAppointments) {
-            if(appointment.getStart().isBefore(fifteenOut) && appointment.getStart().isAfter(now)){
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Alert");
-                alert.setHeaderText("Upcoming Appointment");
-                alert.setContentText("Appointment ID: " +
-                        appointment.getAppointmentId() + " starts at " + dtf.format(appointment.getStart()));
-                alert.showAndWait();
-                return;
-            }
-        }
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Alert");
-        alert.setHeaderText("Upcoming Appointment");
-        alert.setContentText("There are no upcoming appointments.");
-        alert.showAndWait();
+
+        if(Locale.getDefault().getLanguage().equals("fr")){
+            alert.setTitle("Alerte");
+            for(Appointment appointment : allAppointments) {
+                if(appointment.getStart().isBefore(fifteenOut) && appointment.getStart().isAfter(now)){
+                    alert.setHeaderText("Nomination à venir");
+                    alert.setContentText("Identification des rendez-vous: " +
+                            appointment.getAppointmentId() + " commence à " + dtf.format(appointment.getStart()));
+                    alert.showAndWait();
+                    return;
+                }
+            }
+            alert.setHeaderText("Nomination à venir");
+            alert.setContentText("Il n’y a pas de rendez-vous à venir.");
+            alert.showAndWait();
+
+        } else {
+            alert.setTitle("Alert");
+            for(Appointment appointment : allAppointments) {
+                if(appointment.getStart().isBefore(fifteenOut) && appointment.getStart().isAfter(now)){
+                    alert.setHeaderText("Upcoming Appointment");
+                    alert.setContentText("Appointment ID: " +
+                            appointment.getAppointmentId() + " starts at " + dtf.format(appointment.getStart()));
+                    alert.showAndWait();
+                    return;
+                }
+            }
+
+            alert.setHeaderText("Upcoming Appointment");
+            alert.setContentText("There are no upcoming appointments.");
+            alert.showAndWait();
+        }
     }
 
+    /**
+     * This method compares the selected username to the password that corresponds with it inside the database.
+     * If the combination is correct then the user will be forwarded to the main menu screen.
+     * @param actionEvent
+     * @throws SQLException
+     * @throws IOException
+     */
     @FXML
     private void onActionLogIn(ActionEvent actionEvent) throws SQLException, IOException {
         String username = usernameTextField.getText();
@@ -170,6 +242,14 @@ public class LogInController implements Initializable {
 
     }
 
+    /**
+     * This method is called when there is a log in attempt. It will determine if the log in was successful based off
+     * the boolean value passed in then log that to the login_activity.txt file with specific information. If there is no
+     * file then one will be created. If it is already there then the next activity will be appended on a new line.
+     * @param username
+     * @param password
+     * @param success
+     */
     private static void logInLogger (String username, String password, boolean success) {
         try {
             ZonedDateTime utcNow = ZonedDateTime.now(ZoneOffset.UTC);

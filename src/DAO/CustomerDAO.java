@@ -10,8 +10,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * The type Customer dao.
+ */
 public class CustomerDAO {
 
+    /**
+     * Gets customers.
+     *
+     * @return the customers
+     * @throws SQLException the sql exception
+     */
     public static ObservableList<Customer> getCustomers() throws SQLException {
         ObservableList<Customer> customers = FXCollections.observableArrayList();
         String stmt = "SELECT c.Customer_ID, c.Customer_Name, c.Address, c.Postal_Code, c.Phone, " +
@@ -35,6 +44,12 @@ public class CustomerDAO {
         return customers;
     }
 
+    /**
+     * Add customer.
+     *
+     * @param customer the customer
+     * @throws SQLException the sql exception
+     */
     public static void addCustomer(Customer customer) throws SQLException {
         String stmt = "INSERT INTO customers (Customer_ID, Customer_Name, " +
                 "Address, Postal_Code, Phone, Division_ID) " +
@@ -52,6 +67,12 @@ public class CustomerDAO {
         pstmt.executeUpdate();
     }
 
+    /**
+     * Update customer.
+     *
+     * @param customer the customer
+     * @throws SQLException the sql exception
+     */
     public static void updateCustomer(Customer customer) throws SQLException {
         String stmt = "UPDATE customers " +
                 "SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, Division_ID = ? " +
@@ -69,6 +90,12 @@ public class CustomerDAO {
         pstmt.executeUpdate();
     }
 
+    /**
+     * Delete customer.
+     *
+     * @param customer the customer
+     * @throws SQLException the sql exception
+     */
     public static void deleteCustomer(Customer customer) throws SQLException {
         String stmt = "DELETE FROM customers WHERE Customer_ID = " + customer.getCustomerId() + ";";
         Query.makeQuery(DBConnection.openConnection(), stmt);

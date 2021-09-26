@@ -8,8 +8,17 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.Month;
 
+/**
+ * The type Appointment dao.
+ */
 public class AppointmentDAO {
 
+    /**
+     * Gets appointments.
+     *
+     * @return the appointments
+     * @throws SQLException the sql exception
+     */
     public static ObservableList<Appointment> getAppointments () throws SQLException {
         ObservableList<Appointment> appointments = FXCollections.observableArrayList();
         String stmt = "SELECT a.Appointment_ID, a.Title, a.Description, a.Location, " +
@@ -36,6 +45,12 @@ public class AppointmentDAO {
         return appointments;
     }
 
+    /**
+     * Add appointment.
+     *
+     * @param appointment the appointment
+     * @throws SQLException the sql exception
+     */
     public static void addAppointment(Appointment appointment) throws SQLException {
         String stmt = "INSERT INTO appointments (Appointment_ID, Title, Description, " +
                 "Location, Type, Start, End, Customer_ID, User_ID, Contact_ID) " +
@@ -58,6 +73,12 @@ public class AppointmentDAO {
         pstmt.executeUpdate();
     }
 
+    /**
+     * Update appointment.
+     *
+     * @param appointment the appointment
+     * @throws SQLException the sql exception
+     */
     public static void updateAppointment(Appointment appointment) throws SQLException {
         String stmt = "UPDATE appointments " +
                 "SET Title = ?, Description = ?, " +
@@ -81,11 +102,23 @@ public class AppointmentDAO {
         pstmt.executeUpdate();
     }
 
+    /**
+     * Delete appointment.
+     *
+     * @param appointment the appointment
+     * @throws SQLException the sql exception
+     */
     public static void deleteAppointment(Appointment appointment) throws SQLException {
         String stmt = "DELETE FROM appointments WHERE Appointment_ID = " + appointment.getAppointmentId() + ";";
         Query.makeQuery(DBConnection.openConnection(), stmt);
     }
 
+    /**
+     * Gets appointments by type and month.
+     *
+     * @return the appointments by type and month
+     * @throws SQLException the sql exception
+     */
     public static ObservableList<String> getAppointmentsByTypeAndMonth () throws SQLException {
         ObservableList<String> data = FXCollections.observableArrayList();
         String stmt = "SELECT Type, MONTH(Start) AS Month, COUNT(*) AS Count FROM appointments GROUP BY Type, Month;";
