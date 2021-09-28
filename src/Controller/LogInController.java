@@ -101,10 +101,9 @@ public class LogInController implements Initializable {
      * on the current screen. It does this by  creating two buttons, one for yes and one for no.
      * LAMBDA: The lambda is used here to grab the response from within the alert and follow the logic to exit
      * if the response is yes and continue on the log in screen if the response is no.
-     * @param actionEvent
+     * @param actionEvent actionEvent
      */
-    @FXML
-    private void onActionExit(ActionEvent actionEvent) {
+    public void onActionExit(ActionEvent actionEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 
         if(Locale.getDefault().getLanguage().equals("fr")){
@@ -142,7 +141,7 @@ public class LogInController implements Initializable {
     /**
      * This method checks for upcoming appointments within the next 15 minutes. It also handles the french language
      * based off of the users default zone.
-     * @throws SQLException
+     * @throws SQLException SQLException
      */
     private void upcomingAppointments() throws SQLException {
         LocalDateTime now = LocalDateTime.now();
@@ -187,12 +186,11 @@ public class LogInController implements Initializable {
     /**
      * This method compares the selected username to the password that corresponds with it inside the database.
      * If the combination is correct then the user will be forwarded to the main menu screen.
-     * @param actionEvent
-     * @throws SQLException
-     * @throws IOException
+     * @param actionEvent actionEvent
+     * @throws SQLException SQLException
+     * @throws IOException IOException
      */
-    @FXML
-    private void onActionLogIn(ActionEvent actionEvent) throws SQLException, IOException {
+    public void onActionLogIn(ActionEvent actionEvent) throws SQLException, IOException {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
         User user = UserDAO.getUser(username);
@@ -246,9 +244,10 @@ public class LogInController implements Initializable {
      * This method is called when there is a log in attempt. It will determine if the log in was successful based off
      * the boolean value passed in then log that to the login_activity.txt file with specific information. If there is no
      * file then one will be created. If it is already there then the next activity will be appended on a new line.
-     * @param username
-     * @param password
-     * @param success
+     *
+     * @param username The attempted username.
+     * @param password The attempted password.
+     * @param success Boolean whether the login attempt was successful or not.
      */
     private static void logInLogger (String username, String password, boolean success) {
         try {

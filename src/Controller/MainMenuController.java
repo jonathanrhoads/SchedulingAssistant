@@ -371,7 +371,7 @@ public class MainMenuController implements Initializable {
             return;
         }
 
-        boolean hasAppointments = (appointments.filtered(a -> a.getCustomerId() == customer.getCustomerId())).size() > 1;
+        boolean hasAppointments = (appointments.filtered(a -> a.getCustomerId() == customer.getCustomerId())).size() > 0;
 
         if(hasAppointments) {
             Alert alert = new Alert(Alert.AlertType.ERROR);

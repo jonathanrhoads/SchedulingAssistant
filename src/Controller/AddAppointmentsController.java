@@ -102,8 +102,8 @@ public class AddAppointmentsController implements Initializable {
 
     /**
      * Initialized the screen.
-     * @param url
-     * @param resourceBundle
+     * @param url url
+     * @param resourceBundle resourceBundle
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -191,9 +191,9 @@ public class AddAppointmentsController implements Initializable {
     /**
      * Checks to make sure the inputs are valid
      *
-     * @param appointment
-     * @return
-     * @throws SQLException
+     * @param appointment appointment
+     * @return boolean
+     * @throws SQLException SQLException
      */
     private boolean isValidAppointment(Appointment appointment) throws SQLException {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -264,7 +264,7 @@ public class AddAppointmentsController implements Initializable {
      * to Eastern Standard time which is the zone used by the business.
      * @param appointment appointment to confirm
      * @param alert alert
-     * @return
+     * @return boolean
      */
     private boolean checkWithinBusinessHours(Appointment appointment, Alert alert) {
         ZonedDateTime startEST = getEST(LocalDateTime.of(appointment.getStart().getYear(),
@@ -294,8 +294,8 @@ public class AddAppointmentsController implements Initializable {
 
     /**
      * This method changes a time to Eastern Standard Time.
-     * @param time
-     * @return
+     * @param time time
+     * @return ZonedDateTime
      */
     private ZonedDateTime getEST(LocalDateTime time) {
         ZonedDateTime zoneDate = time.atZone(ZoneId.systemDefault());
@@ -304,8 +304,8 @@ public class AddAppointmentsController implements Initializable {
 
     /**
      * This method returns the contact ID of the selected contact in the contact combo box.
-     * @return
-     * @throws SQLException
+     * @return int
+     * @throws SQLException SQLException
      */
     private int getContactId() throws SQLException {
         ObservableList<Contact> contacts = ContactDAO.getContacts();
@@ -320,8 +320,8 @@ public class AddAppointmentsController implements Initializable {
 
     /**
      * This method returns the customer ID of the selected contact in the customer combo box.
-     * @return
-     * @throws SQLException
+     * @return int
+     * @throws SQLException SQLException
      */
     private int getCustomerId() throws SQLException {
         ObservableList<Customer> customers = CustomerDAO.getCustomers();
