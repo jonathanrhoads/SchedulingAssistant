@@ -3,8 +3,6 @@ This application's purpose is to allow the user to create and use customers, man
 
 Author: Jonathan Rhoads
 
-Contact Information: jrhoa34@wgu.edu
-
 Version 1.0.0
 
 Date: 2021-09-26
